@@ -1,0 +1,92 @@
+@page "/fetchdata"
+@page "/fetchdata/{medicinename}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+<h1>Medicines List</h1>
+
+@if (medicineNotFound)
+{
+    <p><em>Medicine Not Found.</em></p>
+    return;
+}
+
+@if (medicines == null && medicine == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!(medicine == null))
+            {
+                <tr>
+                    <td>@medicine.Name</td>
+                    <td>@medicine.Brand</td>
+                    <td>@medicine.Price</td>
+                    <td>@medicine.ExpiryDate</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var medicine in medicines)
+                {
+                    <tr>
+                        <td>@medicine.Name</td>
+                        <td>@medicine.Brand</td>
+                        <td>@medicine.Price</td>
+                        <td>@medicine.ExpiryDate</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary" onclick="window.location.href='AddMed'">Add Medicine</button>
+
+@code {
+
+    private Medicines[] medicines { get; set; }
+    private Medicines medicine { get; set; }
+    private bool medicineNotFound { get; set; }
+
+    [Parameter]
+    public string medicinename { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (medicinename == null)
+            medicines = await Http.GetFromJsonAsync<Medicines[]>("medicines");
+        else
+        {
+            try
+            {
+                medicine = await Http.GetFromJsonAsync<Medicines>("medicines/" + medicinename);
+
+            }
+            catch(Exception)
+            {
+                medicineNotFound = true;
+                return;
+            }
+        }
+
+        if (medicines == null && medicine == null)
+            NavigationManager.NavigateTo("ErrorPage");
+    }
+
+
+}
+
+

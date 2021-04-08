@@ -1,0 +1,25 @@
+﻿@page "/AddMed"
+@inject HttpClient Http
+
+<h3>Add Medicine</h3>
+
+<input class="input-group-text" name="Name" @bind="medicine.Name" />
+<input class="input-group-text" name="Brand" @bind="medicine.Brand" />
+<input class="input-group-text" name="Price" @bind="medicine.Price" />
+<input class="input-group-text" name="Quantity" @bind="medicine.Quantity" />
+<input class="input-group-text" name="ExpiryDate" @bind="medicine.ExpiryDate" />
+<input class="input-group-text" name="Notes" @bind="medicine.Notes" />
+
+<button class="btn btn-primary" @onclick="AddMedicine">Add</button>
+
+@code {
+
+    Medicines medicine { get; set; }
+
+    public async Task AddMedicine()
+    {
+        await Http.PostAsJsonAsync("api/medicines/Create", medicine); 
+
+    }
+
+}

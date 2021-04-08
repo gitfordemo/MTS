@@ -1,0 +1,22 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Search Medicine</h1>
+
+<input class="input-group-text" name="MedSearch" @bind="Medicinename" />
+
+<button class="btn btn-primary" @onclick="SearchMedicine">Search</button>
+
+
+@functions{
+
+    public string Medicinename { get; set; }
+
+    public async Task SearchMedicine()
+    {
+        await Task.Run(() =>
+        { NavigationManager.NavigateTo("fetchdata/" + Medicinename); }
+        ) ;
+    }
+}
